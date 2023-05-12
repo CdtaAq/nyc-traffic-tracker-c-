@@ -1,0 +1,41 @@
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+
+public class TrafficData
+{
+    public string Id { get; set; }
+    public string Speed { get; set; }
+    public string TravelTime { get; set; }
+    public string LinkName { get; set; }
+    public string Status { get; set; }
+    public DateTime DataAsOf { get; set; }
+}
+
+public class Program
+{
+    static readonly HttpClient client = new HttpClient();
+
+    static async Task Main()
+    {
+        // Replace {LOCATION} with the location you want to get traffic data for
+        string url = $"https://data.cityofnewyork.us/resource/i4gi-tjb9.json?$where=st_label='{LOCATION}'";
+
+        try
+        {
+            HttpResponseMessage response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            TrafficData[] trafficData = JsonConvert.DeserializeObject<TrafficData[]>(responseBody);
+            foreach (TrafficData data in trafficData)
+            {
+                Console.WriteLine($"Speed: {data.Speed} mph, Travel Time: {data.TravelTime} mins, Status: {data.Status}");
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error: {e.Message}");
+        }
+    }
+}

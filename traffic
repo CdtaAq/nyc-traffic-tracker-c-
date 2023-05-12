@@ -1,0 +1,33 @@
+public class Car
+{
+    public string LicensePlateNumber { get; set; }
+    public int CurrentSpeed { get; set; }
+}
+
+public class TrafficTracker
+{
+    private List<Car> cars = new List<Car>();
+
+    public void AddCar(string licensePlateNumber, int currentSpeed)
+    {
+        Car car = new Car
+        {
+            LicensePlateNumber = licensePlateNumber,
+            CurrentSpeed = currentSpeed
+        };
+        cars.Add(car);
+    }
+
+    public void RemoveCar(string licensePlateNumber)
+    {
+        Car car = cars.FirstOrDefault(c => c.LicensePlateNumber == licensePlateNumber);
+        if (car != null)
+            cars.Remove(car);
+    }
+}
+
+// Example usage
+TrafficTracker tracker = new TrafficTracker();
+tracker.AddCar("ABC123", 50);
+tracker.AddCar("DEF456", 60);
+tracker.RemoveCar("ABC123");
